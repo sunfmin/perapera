@@ -1,20 +1,21 @@
 <div class="title_video_and_dic">
-  <h1>{{title}}</h1>
+  <h1>{{.Title}}</h1>
+
   <div class="video_and_dic">
+    {{ if .YouKu }}
+    <embed id="website-video-player" class="YouKuPlayer" src="http://player.youku.com/player.php/sid/{{.Code}}/v.swf" quality="high" width="640" height="385" align="middle" allowScriptAccess="always" type="application/x-shockwave-flash"></embed>
+    {{ end }}
 
-    {{#YouKu}}
-    <embed id="website-video-player" class="YouKuPlayer" src="http://player.youku.com/player.php/sid/{{code}}/v.swf" quality="high" width="640" height="385" align="middle" allowScriptAccess="always" type="application/x-shockwave-flash"></embed>
-    {{/YouKu}}
 
-    {{#Picasa}}
+    {{if .Picasa}}
     <embed id="website-video-player" class="GooglePlayer" width="640" height="385" src="http://www.youtube.com/get_player?enablejsapi=1" type="application/x-shockwave-flash" allowfullscreen="true" allowscriptaccess="always" bgcolor="#fff" wmode="opaque" flashvars="<%= @video.picasa_flashvars_or_fetch %>">
-    {{/Picasa}}
+    {{ end }}
 
-    {{#GoogleDoc}}
+    {{ if .GoogleDoc}}
     <embed id="website-video-player" class="GooglePlayer" width="640" height="385" src="http://www.youtube.com/get_player?enablejsapi=1&amp;version=3" type="application/x-shockwave-flash" allowfullscreen="true" allowscriptaccess="always" bgcolor="#fff" wmode="opaque" flashvars="<%= @video.googledoc_flashvars_or_fetch %>">
-    {{/GoogleDoc}}
+    {{ end }}
 
-    {{#DirectLink}}
+    {{ if .DirectLink }}
     <div class="JWPlayer">
       <div id="website-video-player"></div>
     </div>
@@ -29,37 +30,37 @@
             ]
         });
     </script>
-    {{/DirectLink}}
+    {{ end }}
 
-    {{#Other}}
+    {{ if .Other}}
     <div id="website-video" class="video" data-embed-url="<%= @video.embed_url %>" data-video-id="<%= @video.code %>">
       <div id="website-video-player">
       </div>
     </div>
-    {{/Other}}
+    {{ end }}
 
     <div class="dictionary">
 
     </div>
-
   </div>
+
+
+  {{ if .SubtitleLocked}}
+  <div class="subtitles">
+  {{ else }}
+  <div class="subtitles unlocked">
+  {{ end }}
+
+    <ul class="lines">
+      <li class="subtitle" style="display:none"><div class="start_time" data-exact-time="0"></div></li>
+      {{ range .Subtitles }}
+        <li class="subtitle" data-review-url="/subtitles/{{.Id}}/review">
+          <div class="start_time" data-exact-time="{{.StartTimeInSecondsFixed}}"><a href="#">{{.ShortStartTime}}</a></div>
+          <div class="content">{{.SplitToWords}}</div>
+        </li>
+      {{ end }}
+    </ul>
+
+
 </div>
 
-{{#SubtitleLocked}}
-<div class="subtitles">
-{{/SubtitleLocked}}
-
-{{^SubtitleLocked}}
-<div class="subtitles unlocked">
-{{/SubtitleLocked}}
-
-  <ul class="lines">
-    <li class="subtitle" style="display:none"><div class="start_time" data-exact-time="0"></div></li>
-    {{#Subtitles}}
-      <li class="subtitle" data-review-url="/subtitles/{{Id}}/review">
-        <div class="start_time" data-exact-time="{{StartTimeInSecondsFixed}}"><a href="#">{{ShortStartTime}}</a></div>
-        <div class="content">{{SplitToWords}}</div>
-      </li>
-    {{/Subtitles}}
-  </ul>
-</div>
